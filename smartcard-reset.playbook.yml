@@ -1,0 +1,51 @@
+## smartcard-reset.playbook.yml
+## Install and startup the USB smartcard failure bodge.
+## USAGE:
+---
+- name: 'Install fix for yubikey not being detected until reinserted'
+  hosts: localhost
+  become: root
+  vars:
+    # User who the smartcard must work for.
+    sc_user: "sandia" 
+  tasks:
+    ## Install script
+    - name: 'Install script smartcard-reset.sh'
+      ansible.builtin.copy:
+        src: "smartcard-reset.sh"
+        dest: "/usr/local/bin/smartcard-reset.sh"
+        owner: root
+        group: root
+        mode: "u=rwx,g=rx,o=r"
+
+    ## Install unit files
+    - name: 'Install service smartcard-reset.service'
+      ansible.builtin.template:
+        src: "templates/smartcard-reset.service.j2"
+        dest: "/etc/systemd/system/smartcard-reset.service"
+        owner: root
+        group: root
+        mode: "u=rwx,g=rx,o=r"
+
+    - name: 'Install timer smartcard-reset.timer'
+      ansible.builtin.copy:
+        src: "smartcard-reset.timer"
+        dest: "/etc/systemd/system/smartcard-reset.timer"
+        owner: root
+        group: root
+        mode: "u=rwx,g=rx,o=r"
+
+    ## Enable unit(s)
+    - name: 'Enable smartcard-reset service'
+      ansible.builtin.systemd:
+        enabled: yes
+        state: restarted
+        name: "smartcard-reset.service"
+        daemon_reload: yes
+
+    - name: 'Enable smartcard-reset timer'
+      ansible.builtin.systemd:
+        enabled: yes
+        state: restarted
+        name: "smartcard-reset.timer"
+        daemon_reload: yes

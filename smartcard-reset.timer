@@ -1,0 +1,17 @@
+## smartcard-reset.timer
+## Install to: /etc/systemd/system/smartcard-reset.timer
+##
+
+[Unit]
+Description=smartcard-reset timer
+
+[Timer]
+## I am assuming that the system will be fully booted into the GUI within two minutes.
+## Run 2 minutes after boot, then every hour after that.
+OnBootSec=120
+## Hourly:
+OnCalendar=*-*-* *:00:00
+Unit=smartcard-reset
+
+[Install]
+WantedBy=timers.target
