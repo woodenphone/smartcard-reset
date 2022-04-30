@@ -1,0 +1,11 @@
+## smartcard-reset.service
+## Install to: /etc/systemd/system/smartcard-reset.service
+
+[Unit]
+Description=smartcard-reset
+#Docs=Reset smartcard (restart pcscd) to fix issue where smartcard fails to work after rebooting.
+
+[Service]
+Type=oneshot
+# Arg $1 is the user who needs the smartcard.
+ExecStart=/usr/local/bin/smartcard-reset.sh {{ sc_user | quote }}

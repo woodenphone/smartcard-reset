@@ -1,0 +1,66 @@
+## smartcard-reset-service.tasks.yml
+---
+- name: 'Install fix for yubikey not being detected until reinserted'
+  when:
+  - ansible_facts['os_family'] == 'RedHat' # Tested on Fedora.
+  - (uninstall is undefined) or (uninstall | bool != true) # Not told to uninstall.
+  block:
+  ## Install script
+  - name: 'Install script smartcard-reset.sh'
+    ansible.builtin.copy:
+      src: "files/smartcard-reset.sh"
+      dest: "/usr/local/bin/smartcard-reset.sh"
+      owner: root
+      group: root
+      mode: "u=rwx,g=rx,o=r"
+
+  ## Install unit files
+  - name: 'Install service smartcard-reset.service'
+    ansible.builtin.template:
+      src: "templates/smartcard-reset.service.j2"
+      dest: "/etc/systemd/system/smartcard-reset.service"
+      owner: root
+      group: root
+      mode: "u=rwx,g=rx,o=r"
+
+  - name: 'Install timer smartcard-reset.timer'
+    ansible.builtin.copy:
+      src: "files/smartcard-reset.timer"
+      dest: "/etc/systemd/system/smartcard-reset.timer"
+      owner: root
+      group: root
+      mode: "u=rwx,g=rx,o=r"
+
+  ## Enable unit(s)
+  - name: 'Enable smartcard-reset service'
+    ansible.builtin.systemd:
+      enabled: yes
+      state: restarted
+      name: "smartcard-reset.service"
+      daemon_reload: yes
+
+  - name: 'Enable smartcard-reset timer'
+    ansible.builtin.systemd:
+      enabled: yes
+      state: restarted
+      name: "smartcard-reset.timer"
+      daemon_reload: yes
+
+
+- name: 'Uninstall fix for yubikey not being detected until reinserted'
+  when:
+  - ansible_facts['os_family'] == 'RedHat' # Tested on Fedora.
+  - (uninstall is defined) and (uninstall | bool == true) # Told to uninstall.
+  block:
+  - name: 'Remove smartcard-reset.timer'
+    ansible.builtin.file:
+      state: absent
+      path: "/etc/systemd/system/smartcard-reset.timer"
+  - name: 'Remove smartcard-reset.service'
+    ansible.builtin.file:
+      state: absent
+      path: "/etc/systemd/system/smartcard-reset service"
+  - name: 'Remove smartcard-reset.sh'
+    ansible.builtin.file:
+      state: absent
+      path: "/usr/local/bin/smartcard-reset.sh"

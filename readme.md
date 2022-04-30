@@ -20,8 +20,7 @@ Making the script autorun.
 
 ### Via ansible
 1. Change the username in the playbook to your linux username.
-2. Change the username in the service to  your linux username.
-3. Run the playbook:
+2. Run the playbook:
 ```
 $ sudo ansible-playbook smartcard-reset.playbook.yml
 ```
@@ -30,15 +29,32 @@ $ sudo ansible-playbook smartcard-reset.playbook.yml
 ### Manually
 1. Put files in correct locations:
 ```
-$ sudo cp smartcard-reset.sh /usr/local/bin/smartcard-reset.sh
-$ sudo cp smartcard-reset.timer smartcard-reset.timer
-$ sudo cp smartcard-reset.service '/etc/systemd/system/smartcard-reset.service'
+$ sudo cp files/smartcard-reset.sh /usr/local/bin/smartcard-reset.sh
+$ sudo cp files/smartcard-reset.timer smartcard-reset.timer
+$ sudo cp files/smartcard-reset.service '/etc/systemd/system/smartcard-reset.service'
 $ sudo chown 'o=rwx,g=rwx,o=r' smartcard-reset.timer '/etc/systemd/system/smartcard-reset.service' '/usr/local/bin/smartcard-reset.sh'
 ```
 
-2. Schedule to run:
+2. Set user to act on in the service file:
+
+```$ sudo nano /etc/systemd/system/smartcard-reset.service```
 ```
+ExecStart=/usr/local/bin/smartcard-reset.sh "some-user"
+```
+
+3. Schedule to run:
+```
+$ sudo systemctl daemon-reload # Make systemd notice changed config files.
 $ sudo systemctl enable smartcard-reset.timer smartcard-reset.service
+```
+
+4. Manually run (if desired):
+```
+$ sudo systemctl start smartcard-reset.service
+```
+or
+```
+$ sudo /usr/local/bin/smartcard-reset.sh "some-user"
 ```
 
 

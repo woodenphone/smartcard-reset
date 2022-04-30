@@ -19,6 +19,7 @@ else # If string length is not zero
   echo "Found USB smartcard"
 fi
 
+
 ## Check if smartcard is seen by GPG.
 ## Reset pscsd if card not found.
 ## https://github.com/gpg/gnupg/blob/master/doc/DETAILS
@@ -30,9 +31,6 @@ if [ -n "$gpg_sc_status" ] ; then
   systemctl restart pcscd
   #systemctl status pcscd
 fi
-
-
-
 
 
 ## Re-learn smartcard/key association
