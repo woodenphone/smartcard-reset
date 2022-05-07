@@ -1,0 +1,8 @@
+## /etc/udev/rules.d/80-yubikey-actions.rules
+## {{ ansible_managed }}
+
+## Unplug yubikey:
+ACTION=="remove", ENV{ID_VENDOR}=="Yubico", ENV{ID_VENDOR_ID}=="1050", ENV{ID_MODEL_ID}=="0010|0111|0112|0113|0114|0115|0116|0401|0402|0403|0404|0405|0406|0407|0410", RUN+="{{ sc_reset_script_path | quote }} {{ sc_user | quote }}"
+
+## Plug in yubikey:
+ACTION=="add", ENV{ID_VENDOR}=="Yubico", ENV{ID_VENDOR_ID}=="1050", ENV{ID_MODEL_ID}=="0010|0111|0112|0113|0114|0115|0116|0401|0402|0403|0404|0405|0406|0407|0410", RUN+="{{ sc_reset_script_path | quote }} {{ sc_user | quote }}"

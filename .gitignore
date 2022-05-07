@@ -2,3 +2,5 @@
 
 ## Private dirs
 .*/
+.vscode/
+*.code-workspace

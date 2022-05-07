@@ -1,23 +1,24 @@
-#! /bin/bash
-## smartcard-reset.sh
+#!/bin/bash
+## yubikey-actions.sh
 ##
 ## {{ ansible_managed }}
 ##
-## USAGE: $ sudo ./smartcard-reset.sh USER
-## Install to: /usr/local/bin/smartcard-reset.sh
+## Called by '/etc/udev/rules.d/80-yubikey-actions.rules'
+## USAGE: $ sudo ./yubikey-actions.sh USER
+## Install to: /usr/local/bin/yubikey-actions.sh
+## Script should be run as root, as it sudos down into the proper user's account to perform user-specific actions.
 ## AUTHOR: Ctrl-S
 
 sc_user=${1:-${USER}} # Reassociate smartcard with proper user
-echo "# sc_user=$sc_user"
+echo "sc_user=$sc_user"
 
 ## Wait a few seconds to allow normal enumeration and pairing by GPG and PCSC daemons:
 sleep 10
 
-
 ## Check for present USB smartcards.
 ## Exit if no smartcard is plugged in.
 usb_cards_present="$(lsusb | grep 'Yubi')"
-echo "## usb_cards_present=${usb_cards_present@Q}"
+echo "usb_cards_present=${usb_cards_present@Q}"
 
 if [ -z "$usb_cards_present" ] # If string length is zero
 then
@@ -26,6 +27,8 @@ then
 else # If string length is not zero
   echo "Found USB smartcard"
 fi
+
+## TODO: Require GPG and yubikey to have same key on them before checking if paired.
 
 
 ## Check if smartcard is seen by GPG.
@@ -40,7 +43,6 @@ if [ -n "$gpg_sc_status" ] ; then
   #systemctl status pcscd
 fi
 
-sleep 1
 
 ## Re-learn smartcard/key association
 echo "Re-learning smartcard/key pairing"
@@ -49,3 +51,4 @@ sudo -u ${sc_user} gpg-connect-agent "scd serialno" "learn --force" /bye
 
 echo "Script exiting"
 exit
+

@@ -39,3 +39,9 @@ $ gpg --batch --with-colons --list-secret-keys | cut --delimiter=':' --fields=15
 * https://linux.die.net/man/3/syslog
 * https://www.digitalocean.com/community/tutorials/how-to-use-journalctl-to-view-and-manipulate-systemd-logs
 * https://www.man7.org/linux/man-pages/man1/journalctl.1.html
+* https://wiki.archlinux.org/title/Smartcards
+* https://wiki.archlinux.org/title/Udev
+* https://wiki.archlinux.org/title/YubiKey#Executing_actions_on_insertion/removal_of_YubiKey_device
+
+### GNUPG / GPG
+* https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gnupg.git;a=blob_plain;f=doc/DETAILS

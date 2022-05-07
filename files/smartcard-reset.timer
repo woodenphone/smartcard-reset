@@ -7,6 +7,7 @@ Description=smartcard-reset timer
 
 [Timer]
 ## I am assuming that the system will be fully booted into the GUI within two minutes.
+## https://man.archlinux.org/man/systemd.time.7
 ## Run 2 minutes after boot, then every hour after that.
 OnBootSec=120
 ## Hourly:

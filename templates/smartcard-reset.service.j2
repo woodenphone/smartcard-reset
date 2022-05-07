@@ -8,4 +8,4 @@ Description=smartcard-reset
 [Service]
 Type=oneshot
 # Arg $1 is the user who needs the smartcard.
-ExecStart=/usr/local/bin/smartcard-reset.sh {{ sc_user | quote }}
+ExecStart={{ sc_reset_script_path | quote }} {{ sc_user | quote }}

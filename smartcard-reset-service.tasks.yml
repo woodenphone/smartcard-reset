@@ -9,7 +9,16 @@
   - name: 'Install script smartcard-reset.sh'
     ansible.builtin.copy:
       src: "files/smartcard-reset.sh"
-      dest: "/usr/local/bin/smartcard-reset.sh"
+      dest: "{{ sc_reset_script_path }}"
+      owner: root
+      group: root
+      mode: "u=rwx,g=rx,o=r"
+
+  ## Install udev rules file
+  - name: 'Install service 80-yubikey-actions.rules'
+    ansible.builtin.template:
+      src: "templates/80-yubikey-actions.rules.j2"
+      dest: "/etc/udev/rules.d/80-yubikey-actions.rules"
       owner: root
       group: root
       mode: "u=rwx,g=rx,o=r"
@@ -60,7 +69,11 @@
     ansible.builtin.file:
       state: absent
       path: "/etc/systemd/system/smartcard-reset service"
+  - name: 'Remove 80-yubikey-actions.rules'
+    ansible.builtin.file:
+      state: absent
+      path: "/etc/udev/rules.d/80-yubikey-actions.rules"
   - name: 'Remove smartcard-reset.sh'
     ansible.builtin.file:
       state: absent
-      path: "/usr/local/bin/smartcard-reset.sh"
+      path: "{{ sc_reset_script_path }}"
